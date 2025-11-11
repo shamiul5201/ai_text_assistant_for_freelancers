@@ -2,8 +2,11 @@ from fastapi import FastAPI
 from app.routes import generate, web_ui, admin
 from app.routes.auth import auth
 from fastapi.staticfiles import StaticFiles
-from app.database import Base, engine
+from app.database import Base, engine, DATABASE_URL
 from app.models import user_model
+
+
+print("✅ Connected to database:", DATABASE_URL)
 
 Base.metadata.create_all(bind=engine)
 
