@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container">
+  <h2>Login</h2>
+
+  <!-- 🟢 [1] Added ids and form-field wrappers -->
+  <form id="loginForm" method="post" action="/login">
+    <div class="form-field">
+      <input type="text" id="username" name="username" placeholder="Username" required>
+      <!-- 🟢 [2] Field-specific error placeholder -->
+      {% if username_error %}
+        <p class="error">{{ username_error }}</p>
+      {% endif %}
+    </div>
+
+    <div class="form-field">
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <!-- 🟢 [3] Field-specific error placeholder -->
+      {% if password_error %}
+        <p class="error">{{ password_error }}</p>
+      {% endif %}
+    </div>
+
+    <button type="submit">Login</button>
+  </form>
+
+  <!-- 🟢 [4] General errors or messages -->
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+  {% if message %}
+    <p class="message">{{ message }}</p>
+  {% endif %}
+
+  <p class="switch-link">Don’t have an account? <a href="/register">Register here</a></p>
+</div>
+
+<!-- 🟢 [5] Client-side basic validation -->
+<script>
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+  document.querySelectorAll(".js-error").forEach(el => el.remove());
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  let hasError = false;
+
+  if (username.length < 3) {
+    const el = document.createElement("p");
+    el.className = "error js-error";
+    el.textContent = "Username must be at least 3 characters long.";
+    document.getElementById('username').insertAdjacentElement("afterend", el);
+    hasError = true;
+  }
+
+  if (password.length < 1) {
+    const el = document.createElement("p");
+    el.className = "error js-error";
+    el.textContent = "Password cannot be empty.";
+    document.getElementById('password').insertAdjacentElement("afterend", el);
+    hasError = true;
+  }
+
+  if (hasError) e.preventDefault();
+});
+</script>
+
+<style>
+.form-field .error {
+  color: #d33;
+  font-size: 0.85em;
+  margin-top: 4px;
+}
+</style>
+{% endblock %}

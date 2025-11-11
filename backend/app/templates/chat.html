@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="chat-wrapper">
+  <div class="chat-header">
+    <h2>Hello, {{ username }}</h2>
+    <form action="/logout" method="post">
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </div>
+  <p id="remaining" class="remaining">Remaining requests today: {{ remaining }}</p>
+
+  <div class="chat-container">
+    <label><b>Select Task:</b></label>
+    <select id="mode">
+      <option value="proposal_writer">🧾 Proposal Writer</option>
+      <option value="message_rewriter">✍️ Message Rewriter</option>
+      <option value="text_summarizer">📊 Text Summarizer</option>
+    </select>
+
+    <label><b>Instruction:</b></label>
+    <input type="text" id="instruction" placeholder="Example: Make this proposal more persuasive..." required>
+
+    <label><b>Your Text:</b></label>
+    <textarea id="userText" placeholder="Paste your job post, message, or document here..." rows="10" required></textarea>
+
+    <button id="generateBtn">✨ Generate</button>
+  </div>
+
+  <div id="result" class="result-box"></div>
+</div>
+
+<script>
+document.getElementById('generateBtn').addEventListener('click', async (e) => {
+  e.preventDefault();
+  const mode = document.getElementById('mode').value;
+  const instruction = document.getElementById('instruction').value;
+  const userText = document.getElementById('userText').value;
+
+  if (!instruction || !userText) {
+    alert("Please fill out both fields.");
+    return;
+  }
+
+  const button = e.target;
+  button.disabled = true;
+  button.textContent = "⏳ Generating...";
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ mode, instruction, user_text: userText })
+    });
+    const data = await res.json();
+
+    const resultDiv = document.getElementById('result');
+    if (res.status === 200) {
+      resultDiv.innerHTML = `<h3>💡 AI Response:</h3><div class='ai-box'>${data.result.replace(/\n/g, "<br>")}</div>`;
+    } else {
+      resultDiv.innerHTML = `<p class="error">${data.detail}</p>`;
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error generating text.");
+  } finally {
+    button.disabled = false;
+    button.textContent = "✨ Generate";
+  }
+});
+</script>
+
+{% endblock %}

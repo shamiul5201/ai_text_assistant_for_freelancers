@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📜 GPT Logs</h2>
+<table border="1" cellpadding="6" cellspacing="0">
+<tr>
+    <th>Timestamp</th>
+    <th>User</th>
+    <!-- <th>Instruction</th>
+    <th>User Text</th>
+    <th>AI Response</th> -->
+    <th>Tokens</th>
+</tr>
+{% for log in logs %}
+<tr>
+    <td>{{ log.timestamp }}</td>
+    <td>{{ log.user_id }}</td>
+    <!-- <td>{{ log.instruction }}</td>
+    <td>{{ log.user_text }}</td>
+    <td>{{ log.ai_response }}</td> -->
+    <td>{{ log.token_usage.completion_tokens }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<p><a href="/admin/dashboard">⬅ Back to Dashboard</a></p>
+{% endblock %}

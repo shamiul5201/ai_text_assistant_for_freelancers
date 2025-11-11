@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>⚙️ Admin Dashboard</h2>
+
+<!-- Summary cards -->
+<div class="stats">
+  <div class="stat-card">👥 Users: {{ summary.total_users }}</div>
+  <div class="stat-card">⚡ Generations Today: {{ summary.total_generations }}</div>
+  <div class="stat-card">📅 Active Users: {{ summary.active_today }}</div>
+</div>
+
+<!-- Action buttons -->
+<!-- <div class="admin-actions">
+  <form method="post" action="/admin/reset-usage">
+    <button class="btn danger">Reset All Usage</button>
+  </form>
+  <form method="post" action="/admin/logout">
+    <button class="btn">Logout</button>
+  </form>
+</div> -->
+
+<hr>
+
+<!-- User list -->
+<h3>👥 Registered Users</h3>
+<table class="admin-table">
+  <tr><th>ID</th><th>Username</th><th>Created At</th></tr>
+  {% for user in users %}
+    <tr><td>{{ user.id }}</td><td>{{ user.username }}</td><td>{{ user.created_at }}</td></tr>
+  {% endfor %}
+</table>
+
+<!-- Daily Usage -->
+<h3>📊 Daily Usage Limits</h3>
+<table class="admin-table">
+  <tr><th>Username</th><th>Date</th><th>Count</th></tr>
+  {% for username, data in usage.items() %}
+    <tr><td>{{ username }}</td><td>{{ data.date }}</td><td>{{ data.count }}</td></tr>
+  {% endfor %}
+</table>
+
+<!-- Single user actions -->
+<div class="admin-forms">
+  <h4>🧰 Manage User</h4>
+
+  <form method="post" action="/admin/reset-user">
+    <input name="username" placeholder="Username to reset" required>
+    <button class="btn">Reset Usage</button>
+  </form>
+
+  <form method="post" action="/admin/delete-user">
+    <input name="username" placeholder="Username to delete" required>
+    <button class="btn warning">Delete User</button>
+  </form>
+</div>
+
+<p style="margin-top:2em;">
+  <a href="/admin/logs">🧠 View GPT Logs</a>
+</p>
+
+{% endblock %}
